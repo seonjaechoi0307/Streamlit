@@ -2,6 +2,7 @@ selenium
 webdriver-manager
 numpy
 pandas
+pandas_ta
 scikit-learn
 matplotlib
 seaborn
