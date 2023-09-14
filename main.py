@@ -1,6 +1,4 @@
 # -*- coding:utf-8 -*-
-# Column configuration = 선택 시 빨간색 사각형으로 선택 표시 되는 것
-# Text-area 텍스트 작성 영역
 
 import streamlit as st
 import numpy as np
@@ -16,17 +14,17 @@ import utility
 from streamlit_folium import st_folium
 from streamlit_lottie import st_lottie
 
+# wide mode로 페이지 설정
+st.set_page_config(
+    page_title = "3Team_Project",
+    page_icon = "🧊",
+    initial_sidebar_state="expanded",
+    layout="wide"
+    )
+
 # utility.py에서 함수 호출하기
 from utility import plot_line_chart
 from utility import plot_bar_chart
-
-# 변수
-
-# Lottie 파일의 다운로드 링크
-# lottie_url = "https://assets-v2.lottiefiles.com/a/e3e2d742-1150-11ee-9df7-bb137fbc5ed0/jWXSK6nGlE.json"
-
-# wide mode로 페이지 설정
-st.set_page_config(layout="wide")
 
 # 함수
 def main():
@@ -83,7 +81,7 @@ def main():
                 st.pyplot(plt)
 
         # with = Python 컨텍스트 관리자(Context Managter), 작업의 시작과 끝 정의 및 리소스 할당 및 해제 관리하기 위해 사용
-        with st.expander("Chart Section", expanded=False):
+        with st.expander("Chart Section", expanded=True):
             # 두 개의 컬럼 생성
             col1, col2 = st.columns(2)
 
@@ -95,15 +93,15 @@ def main():
                 x_label = 'X 축'
                 y_label = 'Y 축'
                 title = '선 그래프'
-                f = plot_line_chart(x, y, x_label, y_label, title)
-                st.pyplot(f)
+                f1 = plot_line_chart(x, y, x_label, y_label, title)
+                st.pyplot(f1)
 
             # 두 번째 컬럼에 차트 추가
             with col2 :
                 st.markdown("<h4>OOO 차트</h4>", unsafe_allow_html=True)
                 x = np.arange(5)
                 y = [10, 15, 7, 12, 5]
-                x_label = ['A', 'B', 'C', 'D', 'E']
+                x_label = ['1차', '2차', '3차', '4차', '5차']
                 y_label = 'Data Value'
                 title = 'Second Bar Chart'
                 f2 = plot_bar_chart(x, y, x_label, y_label, title)
@@ -147,9 +145,9 @@ def main():
                 ax.plot(data['Date'], data['JS_Price'], label='JS_Price', color='b')
                 ax.plot(data['Date'], data['MovingAverage'], label=f'{window_size}-Day Moving Average', color='g')
                 ax.plot(data['Date'], data['TrendLine'], label='Trend Line', color='r')
-                ax.set_xlabel('Date')
-                ax.set_ylabel('JS_Price')
-                ax.set_title('JS_Price Moving Average and Trend Line')
+                ax.set_xlabel('Date 데이트')
+                ax.set_ylabel('JS_Price 전세가격')
+                ax.set_title('JS_Price Moving Average and Trend Line 전세가격 이동평균 트렌드 선 차트')
                 ax.legend()
                 st.pyplot(fig)
 
@@ -158,7 +156,7 @@ def main():
                 st.markdown("<h4>OOO 차트</h4>", unsafe_allow_html=True)
                 x = np.arange(5)
                 y = [10, 15, 7, 12, 5]
-                x_label = ['A', 'B', 'C', 'D', 'E']
+                x_label = ['1차', '2차', '3차', '4차', '5차']
                 y_label = 'Data Value'
                 title = 'Second Bar Chart'
                 f2 = plot_bar_chart(x, y, x_label, y_label, title)
