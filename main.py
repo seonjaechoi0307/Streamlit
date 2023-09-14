@@ -1,6 +1,14 @@
 # -*- coding:utf-8 -*-
 
 import streamlit as st
+# wide mode로 페이지 설정
+st.set_page_config(
+    page_title = "3Team_Project",
+    page_icon = "🧊",
+    initial_sidebar_state="expanded",
+    layout="wide"
+    )
+
 import numpy as np
 import pandas as pd
 import pandas_ta as ta
@@ -13,14 +21,6 @@ import requests
 import utility
 from streamlit_folium import st_folium
 from streamlit_lottie import st_lottie
-
-# wide mode로 페이지 설정
-st.set_page_config(
-    page_title = "3Team_Project",
-    page_icon = "🧊",
-    initial_sidebar_state="expanded",
-    layout="wide"
-    )
 
 # utility.py에서 함수 호출하기
 from utility import plot_line_chart

@@ -8,7 +8,7 @@ import streamlit as st
 @st.cache(allow_output_mutation=True)
 def set_custom_font():
     # Custom Fonts 디렉토리 경로 설정
-    font_dir = os.path.join(os.getcwd(), "customFonts")
+    font_dir = os.path.join(os.getcwd(), "Fonts")
 
     # Custom Fonts 디렉토리 내의 모든 폰트 파일 경로 가져오기
     font_files = fm.findSystemFonts(fontpaths=[font_dir])

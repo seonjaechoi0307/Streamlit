@@ -23,7 +23,7 @@ import os
 # 그래프에서 마이너스 폰트 깨지는 현상 방지
 plt.rcParams['axes.unicode_minus'] = False
 
-@st.cache(allow_output_mutation=True)
+@st.cache_data()
 def set_custom_font():
     # Custom Fonts 디렉토리 경로 설정
     font_dir = os.path.join(os.getcwd(), "Fonts")
