@@ -15,7 +15,6 @@ from streamlit_folium import st_folium
 from streamlit_lottie import st_lottie
 
 # Font 관련 라이브러리
-import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import os
 

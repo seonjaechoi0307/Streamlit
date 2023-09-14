@@ -4,7 +4,8 @@ import streamlit as st
 # wide mode로 페이지 설정
 st.set_page_config(
     page_title = "3Team_Project",
-    page_icon = "🧊",
+    # 이모지 사이트 : https://www.emojiall.com/ko/emoji/
+    page_icon = "🏦",
     initial_sidebar_state="expanded",
     layout="wide"
     )
@@ -22,9 +23,10 @@ import utility
 from streamlit_folium import st_folium
 from streamlit_lottie import st_lottie
 
-# utility.py에서 함수 호출하기
+# 다른 어플에서 함수 호출하기
 from utility import plot_line_chart
 from utility import plot_bar_chart
+from eda_app import run_eda_app
 
 # 함수
 def main():
@@ -45,14 +47,14 @@ def main():
         choice = st.sidebar.selectbox("Menu", menu)
 
     if choice == ("Home"):
-        with st.expander("Info Section", expanded=False):
+        with st.expander("Info Section", expanded=True):
             col1, col2, col3, col4 = st.columns(4)
 
             # 첫 번째 컬럼에 차트 추가
             with col1 :
                 st.markdown("<h4>OOO 차트</h4>", unsafe_allow_html=True)
-                x = np.arange(0, 10, 0.1)
-                y = np.sin(x)
+                x = ["1차", "2차", "3차", "4차", "5차"]
+                y = ["1차", "2차", "3차", "4차", "5차"]
                 plt.plot(x, y)
                 st.pyplot(plt)
 
@@ -81,7 +83,7 @@ def main():
                 st.pyplot(plt)
 
         # with = Python 컨텍스트 관리자(Context Managter), 작업의 시작과 끝 정의 및 리소스 할당 및 해제 관리하기 위해 사용
-        with st.expander("Chart Section", expanded=True):
+        with st.expander("Chart Section", expanded=False):
             # 두 개의 컬럼 생성
             col1, col2 = st.columns(2)
 
@@ -107,7 +109,7 @@ def main():
                 f2 = plot_bar_chart(x, y, x_label, y_label, title)
                 st.pyplot(f2)
 
-        with st.expander("Stock Section", expanded=True):
+        with st.expander("Stock Section", expanded=False):
             # 두 개의 컬럼 생성
             col1, col2 = st.columns(2)
 
@@ -167,6 +169,7 @@ def main():
             
     elif choice == "EDA" :
         st.subheader("EDA")
+        run_eda_app()
     elif choice == "ML" :
         st.subheader("ML")
     elif choice == "Chart" :
