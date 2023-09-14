@@ -30,6 +30,10 @@ font_path = os.path.join(script_dir, "Fonts", "NanumGothic-Bold.ttf")
 if os.path.isfile(font_path):
     font_name = fm.FontProperties(fname=font_path).get_name()
     # weight(폰트 굵기 종류) = 'ultralight', 'light', 'normal', 'regular', 'book', 'medium', 'roman', 'semibold', 'demibold', 'demi', 'bold', 'heavy', 'extra bold', 'black'.
+    font_files = fm.findSystemFonts(font_path)
+    for font_file in font_files:
+        fm.fontManager.addfont(font_file)
+    fm._load_fontmanager(try_read_cache=False)
     plt.rc('font', family=font_name, size=14, weight='semibold')
     print(f"한글 폰트 '{font_name}'이 설정되었습니다.")
 else:
