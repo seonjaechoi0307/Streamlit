@@ -24,9 +24,11 @@ from streamlit_folium import st_folium
 from streamlit_lottie import st_lottie
 
 # 다른 어플에서 함수 호출하기
+# 어플만 호출해도 함수는 사용 가능하다 하지만 유지보수 및 모든 함수 및 객체를 갖고오면 네임스페이스가 혼란스러워질 수 있다함(in Chat GPT)
 from utility import plot_line_chart
 from utility import plot_bar_chart
 from eda_app import run_eda_app
+from MapInfra import Create_Map
 
 # 함수
 def main():
@@ -47,40 +49,15 @@ def main():
         choice = st.sidebar.selectbox("Menu", menu)
 
     if choice == ("Home"):
-        with st.expander("Info Section", expanded=True):
-            col1, col2, col3, col4 = st.columns(4)
+        with st.expander("Create Map Section", expanded=True):
+            col1, col2 = st.columns(2)
 
-            # 첫 번째 컬럼에 차트 추가
             with col1 :
-                st.markdown("<h4>OOO 차트</h4>", unsafe_allow_html=True)
-                x = ["1차", "2차", "3차", "4차", "5차"]
-                y = ["1차", "2차", "3차", "4차", "5차"]
-                plt.plot(x, y)
-                st.pyplot(plt)
+                # 맵 생성
+                Create_Map()
 
-            # 두 번째 컬럼에 차트 추가
             with col2 :
-                st.markdown("<h4>OOO 차트</h4>", unsafe_allow_html=True)
-                x = np.arange(0, 10, 0.1)
-                y = np.cos(x)
-                plt.plot(x, y)
-                st.pyplot(plt)
-            
-            # 세 번째 컬럼에 차트 추가
-            with col3 :
-                st.markdown("<h4>OOO 차트</h4>", unsafe_allow_html=True)
-                x = np.arange(0, 10, 0.1)
-                y = np.cos(x)
-                plt.plot(x, y)
-                st.pyplot(plt)
-
-            # 네 번째 컬럼에 차트 추가
-            with col4 :
-                st.markdown("<h4>OOO 차트</h4>", unsafe_allow_html=True)
-                x = np.arange(0, 10, 0.1)
-                y = np.cos(x)
-                plt.plot(x, y)
-                st.pyplot(plt)
+                st.write("인프라 목록화 준비중...")
 
         # with = Python 컨텍스트 관리자(Context Managter), 작업의 시작과 끝 정의 및 리소스 할당 및 해제 관리하기 위해 사용
         with st.expander("Chart Section", expanded=False):
@@ -168,7 +145,6 @@ def main():
             st.subheader("머신러닝 예측 데이터")
             
     elif choice == "EDA" :
-        st.subheader("EDA")
         run_eda_app()
     elif choice == "ML" :
         st.subheader("ML")

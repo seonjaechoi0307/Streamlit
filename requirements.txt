@@ -18,3 +18,5 @@ gdown
 streamlit
 streamlit_folium
 streamlit_lottie
+folium
+geopy

@@ -7,12 +7,7 @@ import pandas_ta as ta
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
-import sklearn
-import plotly
 import requests
-import utility
-from streamlit_folium import st_folium
-from streamlit_lottie import st_lottie
 
 # Font 관련 라이브러리
 import matplotlib.font_manager as fm

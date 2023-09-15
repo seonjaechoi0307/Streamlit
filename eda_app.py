@@ -7,18 +7,16 @@ import plotly.express as px
 import seaborn as sns
 
 from utility import plot_line_chart
+from MapInfra import Create_Map
 
 def run_eda_app() :
     st.subheader("탐색적 자료 분석 페이지")
     estate_df = pd.read_csv("./data/month_at.csv")
-    
-    submenu = st.sidebar.selectbox("SubMenu", ["통계", "시각화", "그래프"])
-    if submenu == "통계" :
-        st.dataframe(estate_df)
-        st.write("해당 데이터 프레임의 컬럼 리스트")
-        st.write(estate_df.columns.tolist())
 
-        with st.expander("Option Select Section") :
+    tab1, tab2, tab3, tab4 = st.tabs(["📈 Chart", "📘 Data", "📄 ETC", "🗺️ Map"])
+
+    with tab1 :
+        with st.expander("Option Select Section", expanded=True) :
             col1, col2 = st.columns(2)
 
             with col1 :
@@ -35,29 +33,36 @@ def run_eda_app() :
                 selected_option4 = st.selectbox("컬럼을 선택하세요 : ", options4, key="SelectBox_4")
                 options5 = estate_df.columns.tolist()
                 selected_option5 = st.selectbox("컬럼을 선택하세요 : ", options5, key="SelectBox_5")
-                
-
-                
+            
             with col2 :
+                st.write("선택한 옵션의 그래프가 표시됩니다.")
+                # Select options to Graph Setting
                 x = estate_df[selected_option1]
                 y = estate_df[selected_option2]
                 x_label = "X축"
                 y_label = "Y축"
                 title = selected_option1 + "-" + selected_option2
                 f = plot_line_chart(x, y, x_label, y_label, title)
-                st.pyplot(f)
-            
-            # 선택한 옵션을 기반으로 데이터프레임 필터링
-            filtered_column = pd.concat([estate_df[selected_option1], estate_df[selected_option2]], axis=1)
 
-            # 선택한 옵션과 열 데이터를 목록으로 출력
-            st.write("선택한 옵션:", selected_option1)
-            st.write("열 데이터 목록:")
-            st.write(filtered_column)
+                if (selected_option1 == selected_option2) :
+                    st.write("X와 Y의 값이 같습니다.")
+                else :
+                    st.pyplot(f)
 
-    elif submenu == "시각화" :
-        st.subheader("시각화")
-    elif submenu == "그래프" :
-        st.subheader("그래프")
-    else :
-        pass
+    with tab2 :
+        st.dataframe(estate_df, height=500)
+        with st.expander("Column List", expanded=False) :
+            st.write("해당 데이터 프레임의 컬럼 리스트")
+            st.write(estate_df.columns.tolist())
+
+    with tab3 :
+        # 선택한 옵션을 기반으로 데이터프레임 필터링
+        # filtered_column = pd.concat([estate_df[selected_option1], estate_df[selected_option2]], axis=1)
+
+        # 선택한 옵션과 열 데이터를 목록으로 출력
+        st.write("선택한 옵션:", selected_option1)
+        st.write("열 데이터 목록:")
+        st.write(estate_df[selected_option1])
+
+    with tab4 :
+        Create_Map()
