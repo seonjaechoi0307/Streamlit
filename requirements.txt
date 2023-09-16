@@ -20,4 +20,4 @@ streamlit_folium
 streamlit_lottie
 folium
 geopy
-Prophet
+prophet==1.1.4

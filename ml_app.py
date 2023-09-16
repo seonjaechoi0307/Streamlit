@@ -3,16 +3,17 @@ import joblib
 import os
 import pandas as pd
 import numpy as np
-import prophet
+from prophet import Prophet
 
 def run_ml_app():
     st.subheader("머신 러닝 페이지")
 
     # 레이아웃 구성
     col1, col2 = st.columns(2)
+
     with col1:
         st.subheader("날짜를 선택하세요.")
-        selected_date = st.select_slider("날짜", options=np.arange(1, 1095))
+        selected_date = st.select_slider("날짜", options=np.arange(1, 1096))
         selected_date_list = [selected_date]
         st.write(selected_date_list)
 
@@ -22,7 +23,10 @@ def run_ml_app():
         # Prophet 모델 불러오기
         model_file_path = "./models/Prophet_model_230916.pkl"
         loaded_model = joblib.load(open(os.path.join(model_file_path), "rb"))
-        st.write(loaded_model)
+        # st.write(loaded_model)
+
+        # 도움말 숨기기
+        # st.help(loaded_model)
 
         # 미래 날짜 생성 (Prophet 모델의 예측 범위 내에서)
         future_dates = loaded_model.make_future_dataframe(periods=365 * 3)
