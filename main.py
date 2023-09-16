@@ -29,6 +29,7 @@ from utility import plot_line_chart
 from utility import plot_bar_chart
 from eda_app import run_eda_app
 from MapInfra import Create_Map
+from ml_app import run_ml_app
 
 # 함수
 def main():
@@ -148,6 +149,7 @@ def main():
         run_eda_app()
     elif choice == "ML" :
         st.subheader("ML")
+        run_ml_app()
     elif choice == "Chart" :
         st.subheader("Chart")
     elif choice == "서비스 제공자" :

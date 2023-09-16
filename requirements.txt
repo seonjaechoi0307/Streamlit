@@ -1,7 +1,7 @@
 selenium
 webdriver-manager
 numpy
-pandas
+pandas==1.5.3
 pandas_ta
 scikit-learn
 matplotlib
@@ -20,3 +20,4 @@ streamlit_folium
 streamlit_lottie
 folium
 geopy
+Prophet
