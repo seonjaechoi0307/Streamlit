@@ -87,7 +87,7 @@ def main():
         choice = st.sidebar.selectbox("Menu", menu)
 
     if choice == ("Home"):
-        # Create_Map()
+        Create_Map()
 
         # with = Python 컨텍스트 관리자(Context Managter), 작업의 시작과 끝 정의 및 리소스 할당 및 해제 관리하기 위해 사용
         with st.expander("Chart Section", expanded=False):
