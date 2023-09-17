@@ -114,7 +114,7 @@ def load_Model_df():
     all_predictions_df = pd.DataFrame(all_predictions)
 
     # 데이터 출력
-    st.write(all_predictions_df)
+    st.dataframe(all_predictions_df)
 
 def Model_data_Visualization():
     loaded_model = Model_data_load()
@@ -162,7 +162,7 @@ def Model_data_Visualization():
     ax.grid(True)
     st.pyplot(f)
 
-def Model_data_RSI():
+def Model_data_RSI(): # 일시보류
     loaded_model = Model_data_load()
 
     # 미래 날짜 생성 (Prophet 모델의 예측 범위 내에서)
@@ -241,14 +241,13 @@ def run_VP_app():
             Model_data_load()
             Model_data_Visualization()
 
-
         with tab3 :
             st.write("타운하우스 가격 예측 시각화")
             File_name = '/Prophet_model_230916_TWN_.pkl'
             Model_data_load()
             Model_data_Visualization()
 
-def RSI():
+def RSI(): # 일시 보류
     with st.expander("Predictions_RSI_Section", expanded=False):
         
         # 레이아웃 구성
