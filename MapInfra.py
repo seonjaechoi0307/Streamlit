@@ -6,12 +6,20 @@ import folium
 import numpy as np
 import requests
 from streamlit_folium import st_folium
+import os
 
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
 
+# 현재 스크립트 파일의 디렉토리 경로를 가져옵니다.
+current_directory = os.path.dirname(__file__)
+
+# 데이터 파일의 경로를 결정합니다. 현재 스크립트 파일의 디렉토리와 'data' 디렉토리를 연결합니다.
+data_file_path = os.path.join(current_directory, 'data', 'infra.csv')
+
 # 데이터 받아오기
-infra_df = pd.read_csv('./data/infra.csv')
+infra_df = pd.read_csv(data_file_path)
+
 
 def get_pos(lat, lng) :
     return lat, lng
