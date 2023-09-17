@@ -32,8 +32,6 @@ from MapInfra import Create_Map
 from ml_app import run_ml_app
 from ml_app import run_VP_app
 
-infra_df = pd.read_csv('./data/infra.csv')
-
 # Font 관련 라이브러리
 import matplotlib.font_manager as fm
 import os

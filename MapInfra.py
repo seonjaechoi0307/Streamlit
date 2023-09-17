@@ -11,6 +11,12 @@ import os
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
 
+# 현재 파일 실행 위치에서 "data" 디렉토리에 있는 "infra.csv" 파일을 불러오기 위한 경로 설정
+data_file_path = os.path.join(os.path.dirname(__file__), "data", "infra.csv")
+
+# 데이터 받아오기
+infra_df = pd.read_csv(data_file_path)
+
 def get_pos(lat, lng) :
     return lat, lng
 
