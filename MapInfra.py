@@ -11,8 +11,14 @@ import os
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
 
-# 전역변수 설정
-infra_df = []
+# 현재 스크립트 파일의 디렉토리 경로를 가져옵니다.
+current_directory = os.path.dirname(__file__)
+
+# 데이터 파일의 경로를 결정합니다. 현재 스크립트 파일의 디렉토리와 'data' 디렉토리를 연결합니다.
+data_file_path = os.path.join(current_directory, 'data', 'infra.csv')
+
+# 데이터 받아오기
+infra_df = pd.read_csv(data_file_path)
 
 def get_pos(lat, lng) :
     return lat, lng
@@ -31,16 +37,7 @@ def filter_infra_by_distance(infra_df, base_lat, base_lng, radius_km):
     Returns:
         - DataFrame: 반경 내에 있는 인프라 목록을 담은 DataFrame.
     """
-    global infra_df
 
-    # 현재 스크립트 파일의 디렉토리 경로를 가져옵니다.
-    current_directory = os.path.dirname(__file__)
-
-    # 데이터 파일의 경로를 결정합니다. 현재 스크립트 파일의 디렉토리와 'data' 디렉토리를 연결합니다.
-    data_file_path = os.path.join(current_directory, 'data', 'infra.csv')
-
-    # 데이터 받아오기
-    infra_df = pd.read_csv(data_file_path)
 
     # 결과를 저장할 빈 리스트 설정
     infra_within_distance = []
@@ -68,7 +65,6 @@ def filter_infra_by_distance(infra_df, base_lat, base_lng, radius_km):
     return result_df
 
 def Create_Map() :
-    global infra_df
     location = None  # location 변수 초기화
 
     with st.expander("Create Map Section", expanded=True):
