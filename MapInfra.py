@@ -13,7 +13,6 @@ from geopy.geocoders import Nominatim
 
 infra_df = pd.read_csv('./data/infra.csv')
 
-
 def get_pos(lat, lng) :
     return lat, lng
 
@@ -31,6 +30,8 @@ def filter_infra_by_distance(infra_df, base_lat, base_lng, radius_km):
     Returns:
         - DataFrame: 반경 내에 있는 인프라 목록을 담은 DataFrame.
     """
+
+    global infra_df
 
     # 결과를 저장할 빈 리스트 설정
     infra_within_distance = []
