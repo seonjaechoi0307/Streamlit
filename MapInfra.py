@@ -11,11 +11,8 @@ from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
 
 # 전역 변수 설정
-Data_path = './data'
-File_name = None
 loaded_model = None
-
-infra_df = pd.read_csv(Data_path + '/infra.csv')
+infra_df = pd.read_csv('./data/infra.csv')
 
 def get_pos(lat, lng) :
     return lat, lng
