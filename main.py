@@ -87,15 +87,7 @@ def main():
         choice = st.sidebar.selectbox("Menu", menu)
 
     if choice == ("Home"):
-        with st.expander("Create Map Section", expanded=True):
-            col1, col2 = st.columns(2)
-
-            with col1 :
-                # 맵 생성
-                Create_Map()
-
-            with col2 :
-                st.write("인프라 목록화 준비중...")
+        Create_Map()
 
         # with = Python 컨텍스트 관리자(Context Managter), 작업의 시작과 끝 정의 및 리소스 할당 및 해제 관리하기 위해 사용
         with st.expander("Chart Section", expanded=False):
