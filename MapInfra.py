@@ -31,6 +31,7 @@ def filter_infra_by_distance(infra_df, base_lat, base_lng, radius_km):
     Returns:
         - DataFrame: 반경 내에 있는 인프라 목록을 담은 DataFrame.
     """
+    global infra_df
 
     # 현재 스크립트 파일의 디렉토리 경로를 가져옵니다.
     current_directory = os.path.dirname(__file__)
