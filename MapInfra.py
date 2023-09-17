@@ -12,7 +12,7 @@ from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
 
 # 데이터 받아오기
-infra_df = pd.read_csv('/app/streamlit/data/infra.csv')
+infra_df = pd.read_csv('./data/infra.csv')
 
 def get_pos(lat, lng) :
     return lat, lng
