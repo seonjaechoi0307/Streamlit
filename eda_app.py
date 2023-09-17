@@ -7,13 +7,12 @@ import plotly.express as px
 import seaborn as sns
 
 from utility import plot_line_chart
-from MapInfra import Create_Map
 
 def run_eda_app() :
     st.subheader("탐색적 자료 분석 페이지")
     estate_df = pd.read_csv("./data/month_at.csv")
 
-    tab1, tab2, tab3, tab4 = st.tabs(["📈 Chart", "📘 Data", "📄 ETC", "🗺️ Map"])
+    tab1, tab2, tab3 = st.tabs(["📈 Chart", "📘 Data", "📄 ETC"])
 
     with tab1 :
         with st.expander("Option Select Section", expanded=True) :
@@ -63,6 +62,3 @@ def run_eda_app() :
         st.write("선택한 옵션:", selected_option1)
         st.write("열 데이터 목록:")
         st.write(estate_df[selected_option1])
-
-    with tab4 :
-        Create_Map()
