@@ -11,14 +11,7 @@ import os
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
 
-# 현재 스크립트 파일의 디렉토리 경로를 가져옵니다.
-current_directory = os.path.dirname(__file__)
-
-# 데이터 파일의 경로를 결정합니다. 현재 스크립트 파일의 디렉토리와 'data' 디렉토리를 연결합니다.
-data_file_path = os.path.join(current_directory, 'data', 'infra.csv')
-
-# 데이터 받아오기
-infra_df = pd.read_csv(data_file_path)
+infra_df = pd.read_csv('./data/infra.csv')
 
 
 def get_pos(lat, lng) :
@@ -41,7 +34,6 @@ def filter_infra_by_distance(infra_df, base_lat, base_lng, radius_km):
 
     # 결과를 저장할 빈 리스트 설정
     infra_within_distance = []
-    infra_concat = []
 
     # 받아올 컬럼 설정
     selected_columns = ['Legion_Name', 'Name', 'Kind', 'Distance']
