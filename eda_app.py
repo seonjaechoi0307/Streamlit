@@ -27,6 +27,7 @@ def run_eda_app():
 
             with col1 :
                 st.markdown("<h4>옵션 선택</h4>", unsafe_allow_html=True)
+                
                 # 데이터 프레임의 컬럼 목록을 옵션으로 사용
                 # key = 고유 세션값 (셀렉박스 연속 구현 시 오류를 방지하기 위한 고유 세션값 주기)
                 options1 = data.columns.tolist()
@@ -40,6 +41,7 @@ def run_eda_app():
             
             with col2 :
                 st.markdown("<h4>시각화</h4>", unsafe_allow_html=True)
+
                 # Select options to Graph Setting
                 y = data[selected_option1]
                 x = data[selected_option2]
@@ -246,37 +248,31 @@ def make_chart_HR(df):
     st.pyplot(fig)
 
 def run_eda_app2():
-    with st.expander("Trend in Economic Fluctuations", expanded=True):
-        st.write("준비 중...")
+    with st.expander("Trend in Economic Fluctuations Section", expanded=True):
 
-        tab1, tab2, tab3, tab4, tab5 = st.tabs(["EGR & IR", "ECI", "CR", "PBA", "HR"])
+        tab1, tab2, tab3, tab4, tab5 = st.tabs(["경제성장률 및 금리 변동추이", "경기종합지수 변동추이", "범죄율 변동추이", "연령별 인구수 변동추이", "재개발 횟수 변동추이"])
 
         with tab1:
-            st.write("준비 중...")
             # 경제성장률 및 금리
             df = pd.read_csv('./data/lr_uer_merged.csv')
             make_chart_EGR_IR(df)
 
         with tab2:
-            st.write("준비 중...")
             # 경기종합지수
             df = pd.read_csv('./data/경기종합지리_전처리완료.csv')
             make_chart_ECI(df)
 
         with tab3:
-            st.write("준비 중...")
             # 범죄율
             df = pd.read_csv('./data/서울시5대범죄전처리완료.csv')
             make_chart_CR(df)
 
         with tab4:
-            st.write("준비 중...")
             # 연령별 인구수
             df = pd.read_csv('./data/서울_연령별_인구수_전처리.csv')
             make_chart_PBA(df)
 
         with tab5:
-            st.write("준비 중...")
             # 재개발
             df = pd.read_csv('./data/서울주택재개발_전처리완료.csv')
             make_chart_HR(df)

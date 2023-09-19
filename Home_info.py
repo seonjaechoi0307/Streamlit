@@ -200,27 +200,27 @@ def Regional_Infrastructure():
                 data = infra_df
                 condition = 'Park'
                 m = Create_folium_map(data, condition)
-                st_folium(m, height=500, width=700, key='map_1')
+                st_folium(m, height=600, width=900, key='map_1')
                 
             elif selected_tab == "대학 위치정보":
                 
                 data = infra_df
                 condition = 'College'
                 m = Create_folium_map(data, condition)
-                st_folium(m, height=500, width=700, key='map_2')
+                st_folium(m, height=600, width=900, key='map_2')
                 
             elif selected_tab == "지하철 위치정보":
                 
                 data = infra_df
                 condition = 'Subway'
                 m = Create_folium_map(data, condition)
-                st_folium(m, height=500, width=700, key='map_3')
+                st_folium(m, height=600, width=900, key='map_3')
                 
             elif selected_tab == "학교 위치정보":
                 
                 data = infra_df
                 condition = 'School'
                 m = Create_folium_map(data, condition)
-                st_folium(m, height=500, width=700, key='map_4')
+                st_folium(m, height=600, width=900, key='map_4')
 
 # def View_Info_Visualization():

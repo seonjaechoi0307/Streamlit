@@ -79,7 +79,7 @@ def run_ml_app():
             with col2:
                 st.subheader("모델 결과 확인")
 
-                # 아파트 예측모델 불러오기 위한 File_name 전역 변수화
+                # 오피스텔 예측모델 불러오기 위한 File_name 전역 변수화
                 File_name = '/Prophet_model_230916_OFC_.pkl'
                 make_ml_app()
 
@@ -95,7 +95,7 @@ def run_ml_app():
             with col2:
                 st.subheader("모델 결과 확인")
 
-                # 아파트 예측모델 불러오기 위한 File_name 전역 변수화
+                # 타운하우스 예측모델 불러오기 위한 File_name 전역 변수화
                 File_name = '/Prophet_model_230916_TWN_.pkl'
                 make_ml_app()
 
@@ -200,7 +200,6 @@ def Model_data_RSI(): # 일시보류
     ax.legend(loc=1, fontsize=12) # 1=좌상단, 2=우상단, 3=좌하단, 4=우하단
     ax.grid(True)
     st.pyplot(f)
-
 
 def run_VP_app():
 

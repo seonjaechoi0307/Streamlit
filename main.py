@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-import streamlit as st
+import streamlit as st 
 # wide mode로 페이지 설정
 st.set_page_config(
     page_title = "3Team_Project",
@@ -72,7 +72,7 @@ def set_custom_font():
 
         print(f"한글 폰트 '{font_name}'이 설정되었습니다.")
     else:
-        print("Custom Fonts 디렉토리에서 사용 가능한 폰트 파일을 찾을 수 없습니다.")
+        print("Fonts 디렉토리에서 사용 가능한 폰트 파일을 찾을 수 없습니다.")
 
 # 한글 폰트 설정 함수 호출
 set_custom_font()
@@ -92,22 +92,16 @@ def main():
             "<h2 style='text-align: center; color: Black;'>Team Name : 건물주 </h2>",
             unsafe_allow_html=True,
         )
-        menu = ["🏛️ Home", "📊 EDA & Chart", "⚙️ ML", "🥇 서비스 제공자"]
+        menu = ["🏛️ Home", "📊 EDA", "⚙️ ML", "🥇 서비스 제공자"]
         choice = st.sidebar.selectbox("Menu", menu)
 
     if choice == ("🏛️ Home"):
         Create_Map()
-        Regional_Infrastructure()   
-
-        with st.expander("Stock Section", expanded=False):
-            st.write("준비 중...")
-
-        with st.expander("ML Section", expanded=False):
-            st.write("준비 중...")
-            
-    elif choice == "📊 EDA & Chart" :
-        run_eda_app()
+        Regional_Infrastructure()
         run_eda_app2()
+            
+    elif choice == "📊 EDA" :
+        run_eda_app()
 
     elif choice == "⚙️ ML" :
         st.subheader("머신 러닝 페이지")
