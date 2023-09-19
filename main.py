@@ -28,9 +28,18 @@ from streamlit_lottie import st_lottie
 from utility import plot_line_chart
 from utility import plot_bar_chart
 from eda_app import run_eda_app
-from MapInfra import Create_Map
+from eda_app import run_eda_app2
+from Home_info import Create_Map
+from Home_info import Regional_Infrastructure
 from ml_app import run_ml_app
 from ml_app import run_VP_app
+
+# folium 관련 경고 무시
+import warnings
+from folium import folium
+
+# Folium의 FutureWarning 경고 무시
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 # Font 관련 라이브러리
 import matplotlib.font_manager as fm
@@ -58,7 +67,7 @@ def set_custom_font():
 
         # Matplotlib 폰트 설정
         plt.rcParams['font.family'] = font_name
-        plt.rcParams['font.size'] = 14
+        plt.rcParams['font.size'] = 12
         plt.rcParams['font.weight'] = 'semibold'
 
         print(f"한글 폰트 '{font_name}'이 설정되었습니다.")
@@ -83,109 +92,29 @@ def main():
             "<h2 style='text-align: center; color: Black;'>Team Name : 건물주 </h2>",
             unsafe_allow_html=True,
         )
-        menu = ["Home", "EDA", "ML", "Chart", "서비스 제공자"]
+        menu = ["🏛️ Home", "📊 EDA & Chart", "⚙️ ML", "🥇 서비스 제공자"]
         choice = st.sidebar.selectbox("Menu", menu)
 
-    if choice == ("Home"):
+    if choice == ("🏛️ Home"):
         Create_Map()
-
-        # with = Python 컨텍스트 관리자(Context Managter), 작업의 시작과 끝 정의 및 리소스 할당 및 해제 관리하기 위해 사용
-        with st.expander("Chart Section", expanded=False):
-            # 두 개의 컬럼 생성
-            col1, col2 = st.columns(2)
-
-            # 첫 번째 컬럼에 차트 추가
-            with col1 :
-                st.markdown("<h4>OOO 차트</h4>", unsafe_allow_html=True)
-                x = np.arange(0, 10, 0.1)
-                y = np.cos(x)
-                x_label = 'X 축'
-                y_label = 'Y 축'
-                title = '선 그래프'
-                f1 = plot_line_chart(x, y, x_label, y_label, title)
-                st.pyplot(f1)
-
-            # 두 번째 컬럼에 차트 추가
-            with col2 :
-                st.markdown("<h4>OOO 차트</h4>", unsafe_allow_html=True)
-                x = np.arange(5)
-                y = [10, 15, 7, 12, 5]
-                x_label = ['1차', '2차', '3차', '4차', '5차']
-                y_label = 'Data Value'
-                title = 'Second Bar Chart'
-                f2 = plot_bar_chart(x, y, x_label, y_label, title)
-                st.pyplot(f2)
+        Regional_Infrastructure()   
 
         with st.expander("Stock Section", expanded=False):
-            # 두 개의 컬럼 생성
-            col1, col2 = st.columns(2)
+            st.write("준비 중...")
 
-            # 첫 번째 컬럼에 차트 추가
-            with col1 :
-                st.markdown("<h4>이동평균 차트</h4>", unsafe_allow_html=True)
-
-                # 데이터 프레임 생성 (예제 데이터)
-                data = pd.DataFrame({'Date': ['2022-01', '2022-02', '2022-03', '2022-04', '2022-05', '2022-06'],
-                                    'JS_Price': [100, 150, 140, 130, 120, 110, ]})
-
-                # 이동평균 계산 함수
-                def calculate_moving_average(data, window_size):
-                    return data.rolling(window=window_size).mean()
-
-                # 트렌드선 계산 함수
-                def calculate_trend_line(data):
-                    x = np.arange(len(data))
-                    y = data.values
-                    coefficients = np.polyfit(x, y, 1)
-                    trend_line = np.poly1d(coefficients)
-                    return trend_line(x)
-
-                # 이동평균 윈도우 크기 선택
-                window_size = st.slider('Select Moving Average Window Size:', 2, 20, 7)
-
-                # 이동평균 계산
-                data['MovingAverage'] = calculate_moving_average(data['JS_Price'], window_size)
-
-                # 트렌드선 계산
-                data['TrendLine'] = calculate_trend_line(data['JS_Price'])
-
-                # 선 차트 그리기
-                fig, ax = plt.subplots(figsize=(12, 6))
-                ax.plot(data['Date'], data['JS_Price'], label='JS_Price', color='b')
-                ax.plot(data['Date'], data['MovingAverage'], label=f'{window_size}-Day Moving Average', color='g')
-                ax.plot(data['Date'], data['TrendLine'], label='Trend Line', color='r')
-                ax.set_xlabel('Date 데이트')
-                ax.set_ylabel('JS_Price 전세가격')
-                ax.set_title('JS_Price Moving Average and Trend Line 전세가격 이동평균 트렌드 선 차트')
-                ax.legend()
-                st.pyplot(fig)
-
-            # 두 번째 컬럼에 차트 추가
-            with col2 :
-                st.markdown("<h4>OOO 차트</h4>", unsafe_allow_html=True)
-                x = np.arange(5)
-                y = [10, 15, 7, 12, 5]
-                x_label = ['1차', '2차', '3차', '4차', '5차']
-                y_label = 'Data Value'
-                title = 'Second Bar Chart'
-                f2 = plot_bar_chart(x, y, x_label, y_label, title)
-                st.pyplot(f2)
-
-        with st.expander("ML Section", expanded=True) :
-            st.subheader("머신러닝 예측 데이터")
+        with st.expander("ML Section", expanded=False):
+            st.write("준비 중...")
             
-    elif choice == "EDA" :
+    elif choice == "📊 EDA & Chart" :
         run_eda_app()
+        run_eda_app2()
 
-    elif choice == "ML" :
+    elif choice == "⚙️ ML" :
         st.subheader("머신 러닝 페이지")
         run_ml_app()
         run_VP_app()
 
-    elif choice == "Chart" :
-        st.subheader("Chart")
-
-    elif choice == "서비스 제공자" :
+    elif choice == "🥇 서비스 제공자" :
         st.image("./image/Service_Provider.png")
 
     else :
