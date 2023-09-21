@@ -22,6 +22,8 @@ import requests
 import utility
 from streamlit_folium import st_folium
 from streamlit_lottie import st_lottie
+import datetime
+import lightgbm as lgb
 
 # 다른 어플에서 함수 호출하기
 # 어플만 호출해도 함수는 사용 가능하다 하지만 유지보수 및 모든 함수 및 객체를 갖고오면 네임스페이스가 혼란스러워질 수 있다함(in Chat GPT)
@@ -33,6 +35,7 @@ from Home_info import Create_Map
 from Home_info import Regional_Infrastructure
 from ml_app import run_ml_app
 from ml_app import run_VP_app
+from Check_Map import layout_ml_LightGBM_app
 
 # folium 관련 경고 무시
 import warnings
@@ -80,6 +83,7 @@ set_custom_font()
 # 함수
 def main():
     st.markdown("# 3Team Project : 부동산 전세가격 예측 및 전세가율 분석")
+
     # 구분선 추가
     st.markdown('---')
 
@@ -92,21 +96,25 @@ def main():
             "<h2 style='text-align: center; color: Black;'>Team Name : 건물주 </h2>",
             unsafe_allow_html=True,
         )
-        menu = ["🏛️ Home", "📊 EDA", "⚙️ ML", "🥇 서비스 제공자"]
+        menu = ["🏛️ 홈페이지", "📊 데이터 분석", "⚙️ 전세가격 예측", "임시메뉴", "🥇 서비스 제공자"]
         choice = st.sidebar.selectbox("Menu", menu)
 
-    if choice == ("🏛️ Home"):
+    if choice == ("🏛️ 홈페이지"):
         Create_Map()
         Regional_Infrastructure()
         run_eda_app2()
             
-    elif choice == "📊 EDA" :
+    elif choice == "📊 데이터 분석" :
         run_eda_app()
 
-    elif choice == "⚙️ ML" :
+    elif choice == "⚙️ 전세가격 예측" :
         st.subheader("머신 러닝 페이지")
         run_ml_app()
         run_VP_app()
+
+    elif choice == "임시메뉴" :
+        st.subheader("테스트 중")
+        layout_ml_LightGBM_app()
 
     elif choice == "🥇 서비스 제공자" :
         st.image("./image/Service_Provider.png")

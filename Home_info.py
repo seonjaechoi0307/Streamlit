@@ -7,7 +7,6 @@ import numpy as np
 import requests
 from streamlit_folium import st_folium
 import os
-import requests
 import json
 
 from geopy.distance import geodesic

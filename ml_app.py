@@ -267,4 +267,3 @@ def RSI(): # 일시 보류
             st.write("타운하우스 가격 예측 시각화")
             File_name = '/Prophet_model_230916_TWN_.pkl'
             Model_data_load()
-
