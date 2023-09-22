@@ -16,26 +16,20 @@ import pandas_ta as ta
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
-import sklearn
-import plotly
 import requests
 import utility
-from streamlit_folium import st_folium
 from streamlit_lottie import st_lottie
-import datetime
 import lightgbm as lgb
 
 # 다른 어플에서 함수 호출하기
 # 어플만 호출해도 함수는 사용 가능하다 하지만 유지보수 및 모든 함수 및 객체를 갖고오면 네임스페이스가 혼란스러워질 수 있다함(in Chat GPT)
-from utility import plot_line_chart
-from utility import plot_bar_chart
-from eda_app import run_eda_app
-from eda_app import run_eda_app2
-from Home_info import Create_Map
-from Home_info import Regional_Infrastructure
-from ml_app import run_ml_app
-from ml_app import run_VP_app
-from Check_Map import layout_ml_LightGBM_app
+from EDA_app import run_eda_app
+from EDA_app import run_eda_app2
+from Home_app import Create_Map
+from Home_app import Regional_Infrastructure
+from Test_ml_app import run_ml_app
+from Test_ml_app import run_VP_app
+from ML_app import layout_ml_LightGBM_app
 
 # folium 관련 경고 무시
 import warnings

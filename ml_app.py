@@ -1,269 +1,282 @@
 # -*- coding:utf-8 -*-
 
 import streamlit as st
-import joblib
-import os
 import pandas as pd
-import pandas_ta as ta
+import folium
 import numpy as np
-import matplotlib.pyplot as plt
-from prophet import Prophet
+import requests
+from streamlit_folium import st_folium
+import os
+import requests
+import json
+import re
+from math import radians, sin, cos, sqrt, atan2
+import datetime
+import lightgbm as lgb
+import joblib
 
-# 전역 변수 설정
-selected_date = None
-model_file_path = None
-Data_path = './models'
-File_name = None
-loaded_model = None
+# 전역변수 세팅파트
 
-# 예측 모델 불러오는 함수
-def Model_data_load():
+# 자치구 필터링할 데이터 프레임 불러오기
+School_df = pd.read_csv('./data/School.csv')
+University_df = pd.read_csv('./data/University.csv')
+Subway_df = pd.read_csv('./data/서울지하철주소종합.csv')
 
-    # Prophet 모델 불러오기
-    model_file_path = Data_path + File_name
-    loaded_model = joblib.load(open(os.path.join(model_file_path), "rb"))
-    return loaded_model
+# 함수관련 세팅파트
 
-# 예측 모델 예측값 표기 함수
-def make_ml_app():
+# Function to calculate Haversine distance = Haversine 공식에 따라 두 좌표간의 최단거리를 구하는 함수
+def haversine_distance(lat1, lon1, lat2, lon2):
 
-    # Prophet 모델 불러오기
-    loaded_model = Model_data_load()
+    """
+    lat1 및 lon1: 첫 번째 지점의 위도와 경도입니다.
+    lat2 및 lon2: 두 번째 지점의 위도와 경도입니다.
+    R: 지구의 반지름 (평균 반지름 6,371,000 미터)
+    phi1 및 phi2: 위도를 라디안 단위로 변환한 값입니다.
+    delta_phi 및 delta_lambda: 위도와 경도의 차이를 라디안 단위로 표현한 값입니다.
 
-    # st.write(loaded_model) >> 모델 이름 표기하니까 도움말이 자동으로 떠서 주석처리함
+    1. 두 지점의 위도 및 경도를 라디안 단위로 변환
+    2. 위도와 경도의 차이를 계산
+    3. Haversine 공식을 사용하여 위도와 경도 차이에 기반한 중간 값 'a' 계산
+    4. 중간 값 'a'를 사용하여 최단거리 'a'를 계산합니다.
+    """
 
-    # 미래 날짜 생성 (Prophet 모델의 예측 범위 내에서)
-    future_dates = loaded_model.make_future_dataframe(periods=365 * 3)
+    R = 6371000  # Radius of Earth in meters
+    phi1 = radians(lat1)
+    phi2 = radians(lat2)
 
-    # 선택한 날짜에 대한 예측값 추출
-    selected_date_prediction = loaded_model.predict(future_dates.iloc[[selected_date - 1]])
+    delta_phi = radians(lat2 - lat1)
+    delta_lambda = radians(lon2 - lon1)
 
-    # 예측값 출력
-    return st.write(f"선택한 Date 값({selected_date})의 예측 가격: {selected_date_prediction['yhat'].values[0]}")
+    a = sin(delta_phi / 2) * sin(delta_phi / 2) + cos(phi1) * cos(phi2) * sin(delta_lambda / 2) * sin(delta_lambda / 2)
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
-# 예측 모델 불러와서 옵션값에 따라 예측 가격 표시하기
-def run_ml_app():
+    distance = R * c  # Distance in meters
+    return distance
 
-    with st.expander("ML_Predictions_Section", expanded=True):
+# 기준 좌표(위도,경도)를 기준으로 데이터 프레임에서 가장 가까운 위도, 경도값을 구하는 함수
+def Find_Nearest_distance(data, lat, lng):
 
-        # 전역 변수로서 selected_date를 사용
-        global selected_date
-        global File_name
+    # 초기 최단거리와 인덱스 설정
+    min_distance = float('inf')  # 초기 최단거리를 무한대로 설정
+    closest_index = -1
 
-        # 레이아웃 구성
-        tab1, tab2, tab3 = st.tabs(["ML to Apart", "ML to Officetel", "ML to Townhouse"])
+    # 기준 위도 경도를 주소 입력한 위도, 경도값으로 맞춰놓기
+    Reference_latitude = lat
+    Reference_longitude = lng
 
-        with tab1 :
-            col1, col2 = st.columns(2)
-            with col1:
+    # 반복문을 통해 데이터 프레임의 row[위도, 경도] 불러와서 최단거리 찾기
+    for index, row in data.iterrows():
+        infra_latitude = row['위도']
+        infra_longitude = row['경도']
 
-                st.subheader("아파트 가격 예측")
-                selected_date = st.select_slider("Option : Day", options=np.arange(1, 1096), key="ML_APT_Slider")
-                selected_date_list = [selected_date]
+         # 기준 좌표(위도, 경도)와 현재 인프라(위도, 경도) 사이의 최단거리 계산
+        distance = haversine_distance(Reference_latitude, Reference_longitude, infra_latitude, infra_longitude)
 
-            with col2:
-                st.subheader("모델 결과 확인")
+        # 현재의 거리가 지금까지 계산된 거리 보다 작은지 확인합니다.
+        if distance < min_distance:
+            
+            # 최단거리 업데이트
+            min_distance = distance
 
-                # 아파트 예측모델 불러오기 위한 File_name 전역 변수화
-                File_name = '/Prophet_model_230916_APT_.pkl'
-                make_ml_app()
+            # 최단거리의 인덱스 업데이트
+            closest_index = index
 
-        with tab2 :
-            col1, col2 = st.columns(2)
-            with col1:
+    # 가장 가까운 위도, 경도 값
+    closest_coordinates = data.iloc[closest_index]   # 가장 가까운 좌표(위도, 경도)
+    closest_latitude = closest_coordinates['위도']   # 가장 가까운 위도
+    closest_longitude = closest_coordinates['경도']  # 가장 가까운 경도
 
-                st.subheader("오피스텔 가격 예측")
-                selected_date = st.select_slider("Option : Day", options=np.arange(1, 1096), key="ML_OFC_Slider")
-                selected_date_list = [selected_date]
+    return closest_latitude, closest_longitude
 
-            with col2:
-                st.subheader("모델 결과 확인")
+# 기준 좌표(위도,경도)와 가장 가까운 좌표(위도,경도)의 최단거리를 구하는 함수
+def calculate_shortest_distance(data, lat, lng):
 
-                # 오피스텔 예측모델 불러오기 위한 File_name 전역 변수화
-                File_name = '/Prophet_model_230916_OFC_.pkl'
-                make_ml_app()
+    # 가장 가까운 위도 경도 찾는 함수 불러오기 clat = 가장 가까운 위도, clng = 가장 가까운 경도
+    clat, clng = Find_Nearest_distance(data, lat, lng)
 
-        with tab3 :
-            col1, col2 = st.columns(2)
-            with col1:
-                
+    # 최단 거리 계산하는 함수를 통해 최단거리 계산 =>>> 기준 좌표를 기준으로 최단 거리 좌표와의 최단 거리 계산하기
+    shortest_distance = haversine_distance(lat, lng, clat, clng)
 
-                st.subheader("타운하우스 가격 예측")
-                selected_date = st.select_slider("Option : Day", options=np.arange(1, 1096), key="ML_TWN_Slider")
-                selected_date_list = [selected_date]
+    # 최단 거리 값 반환
+    return shortest_distance
 
-            with col2:
-                st.subheader("모델 결과 확인")
-
-                # 타운하우스 예측모델 불러오기 위한 File_name 전역 변수화
-                File_name = '/Prophet_model_230916_TWN_.pkl'
-                make_ml_app()
-
-# Visualize_Predictions = 예측 시각화
-# def make_VP_app():
-
-def load_Model_df():
-    # 데이터 프레임 Check
-    loaded_model = Model_data_load()
-
-    # 미래 날짜 생성 (Prophet 모델의 예측 범위 내에서)
-    future_dates = loaded_model.make_future_dataframe(periods=365 * 3)
+# 선택된 년, 월을 기준으로 데이터 프레임을 필터링하는 함수
+def Filter_df_by_date(data, column_list, select_year, select_month):
     
-    # 데이터 all_predictions 함수에 불러와서 데이터 프레임화 시키기
-    all_predictions = loaded_model.predict(future_dates)
-    all_predictions_df = pd.DataFrame(all_predictions)
+    # 모델을 데이터프레임으로 변환
+    df = pd.DataFrame(data)
 
-    # 데이터 출력
-    st.dataframe(all_predictions_df)
+    # 선택한 연도와 월 값으로 year와 month 컬럼의 값과 일치하는 행을 필터링
+    filter_df = df[(df['Year'] == select_year) & (df['Month'] == select_month)]
+    
+    # 필터된 데이터 프레임에서 특정 컬럼 리스트 값들만 추출하기
+    selected_columns_df = filter_df[column_list]
 
-def Model_data_Visualization():
-    loaded_model = Model_data_load()
+    # 필터된 데이터 프레임 반환
+    return selected_columns_df
 
-    # 미래 날짜 생성 (Prophet 모델의 예측 범위 내에서)
-    future_dates = loaded_model.make_future_dataframe(periods=365 * 3)
+# 레이아웃 관련파트
 
-    # 데이터 all_predictions 함수에 불러와서 데이터 프레임화 시키기
-    all_predictions = loaded_model.predict(future_dates)
-    all_predictions_df = pd.DataFrame(all_predictions)
+# 머신러닝 모델 레이아웃을 배치하는 함수
+def layout_ml_LightGBM_app():
 
-    # "Date" 열을 날짜 및 시간 형식으로 변환합니다 (만약 이미 날짜 형식이 아닌 경우에만).
-    all_predictions_df['ds'] = pd.to_datetime(all_predictions_df['ds'])
-
-    # "Date" 열에서 일(day)이 1일 (월의 첫 번째 날)인 행(row)들만 추출합니다.
-    all_predictions_df = all_predictions_df[all_predictions_df['ds'].dt.day == 1]
-
-    # Plot Setting
-    f, ax = plt.subplots(figsize=(60, 40))
-    ax.plot(all_predictions_df['ds'], all_predictions_df['yhat'], linewidth=10)
-    ax.set_xlabel('Date', fontsize=48)
-    ax.set_ylabel('Predicte Price', fontsize=48)
-    ax.set_title('Predicted Price Over Time', fontsize=48)
-    ax.tick_params(axis='x', rotation=45)
-
-    # x-축의 눈금(틱)을 월별 시작일을 1일 간격으로 설정
-    monthly_ticks = pd.date_range(start=all_predictions_df['ds'].min(), end=all_predictions_df['ds'].max(), freq='MS')
-    plt.xticks(monthly_ticks, [date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
-
-    # 4개월, 8개월, 12개월 이동평균 계산
-    for monthly_ticks in [4, 8, 12]:
-
-        # monthly_ticks 단위로 이동평균 컬럼 만들기
-        ma_column = f'ma_{monthly_ticks}'
-        all_predictions_df[ma_column] = ta.sma(all_predictions_df['yhat'], length=monthly_ticks)
-
-    # 추세선 및 이동평균선 그리기
-    ax.plot(all_predictions_df['ds'], all_predictions_df['trend'], linewidth=4, linestyle='--', color='red', label='Trend')
-    ax.plot(all_predictions_df['ds'], all_predictions_df['ma_4'], linewidth=4, linestyle='--', color='green', label='ma_120')
-    ax.plot(all_predictions_df['ds'], all_predictions_df['ma_8'], linewidth=4, linestyle='--', color='orange', label='ma_240')
-    ax.plot(all_predictions_df['ds'], all_predictions_df['ma_12'], linewidth=4, linestyle='--', color='purple', label='ma_360')
-
-    # 출력
-    ax.legend(loc=2, fontsize=52) # 1=좌상단, 2=우상단, 3=좌하단, 4=우하단
-    ax.grid(True)
-    st.pyplot(f)
-
-def Model_data_RSI(): # 일시보류
-    loaded_model = Model_data_load()
-
-    # 미래 날짜 생성 (Prophet 모델의 예측 범위 내에서)
-    future_dates = loaded_model.make_future_dataframe(periods=365 * 3)
-
-    # 데이터 all_predictions 함수에 불러와서 데이터 프레임화 시키기
-    all_predictions = loaded_model.predict(future_dates)
-    all_predictions_df = pd.DataFrame(all_predictions)
-
-    # "Date" 열을 날짜 및 시간 형식으로 변환합니다 (만약 이미 날짜 형식이 아닌 경우에만).
-    all_predictions_df['ds'] = pd.to_datetime(all_predictions_df['ds'])
-
-    # "Date" 열에서 일(day)이 1일 (월의 첫 번째 날)인 행(row)들만 추출합니다.
-    all_predictions_df = all_predictions_df[all_predictions_df['ds'].dt.day == 1]
-
-    # Plot Setting
-    f, ax = plt.subplots(figsize=(10, 4))
-    ax.plot(all_predictions_df['rsi_14'])
-    ax.axhline(y=40, color='r', linestyle='--', label='RSI 40')
-    ax.axhline(y=60, color='g', linestyle='--', label='RSI 60')
-    ax.axhline(y=all_predictions_df['rsi_14'].mean(), color='b', linestyle='--', label='RSI Mean')
-
-    # x-축의 눈금(틱)을 월별 시작일을 1일 간격으로 설정
-    monthly_ticks = pd.date_range(start=all_predictions_df['ds'].min(), end=all_predictions_df['ds'].max(), freq='MS')
-    plt.xticks(monthly_ticks, [date.strftime('%Y-%m-%d') for date in monthly_ticks], rotation=45)
-
-    # 상대강도지수 (RSI) 지표 계산
-    all_predictions_df['rsi_14'] = ta.rsi(monthly_ticks, length=1)
-
-    ax.set_title('상대강도지수 (RSI) 지표 계산')
-    ax.set_xlabel('Date')
-    ax.set_ylabel('RSI Value')
-
-    # 출력
-    ax.legend(loc=1, fontsize=12) # 1=좌상단, 2=우상단, 3=좌하단, 4=우하단
-    ax.grid(True)
-    st.pyplot(f)
-
-def run_VP_app():
-
-    with st.expander("Model_DataFrame_Section", expanded=False):
+    with st.expander("Light GBM ML Section", expanded=True):
         
-        # 전역변수 설정
-        global File_name, selected_date
+        st.write("<h4>사용 방법 안내</h4>", unsafe_allow_html=True)
+        st.write("<h5>1. 좌측에 조건 값을 입력하세요.</h5>", unsafe_allow_html=True)
+        st.write("<h5>2. 조건 값 입력 후 엔터를 누르세요.</h5>", unsafe_allow_html=True)
+        st.write("<h5>3. 조건 값 전체 입력 시 우측에 예측 결과 값이 나옵니다.</h5>", unsafe_allow_html=True)
+        st.markdown('---')
 
-        # 레이아웃 구성
-        tab1, tab2, tab3 = st.tabs(["ML to Apart_DF", "ML to Officetel_DF", "ML to Townhouse_DF"])
-
-        with tab1 :
-            File_name = '/Prophet_model_230916_APT_.pkl'
-            load_Model_df()
-
-        with tab2 :
-            File_name = '/Prophet_model_230916_OFC_.pkl'
-            load_Model_df()
-
-        with tab3 :
-            File_name = '/Prophet_model_230916_TWN_.pkl'
-            load_Model_df()
+        col1, col2 = st.columns([1, 2])
         
-    with st.expander("Visualize_Predictions_Section", expanded=False):
-        
-        # 레이아웃 구성
-        tab1, tab2, tab3 = st.tabs(["Apart Plot", "Officetel Plot", "Townhouse Plot"])
+        with col1 :
 
-        with tab1 :
-            st.write("아파트 가격 예측 시각화")
-            File_name = '/Prophet_model_230916_APT_.pkl'
-            Model_data_load()
-            Model_data_Visualization()
+            # 변수 설정
+            data_point = {}
+            Found_Name = None
 
-        with tab2 :
-            st.write("오피스텔 가격 예측 시각화")
-            File_name = '/Prophet_model_230916_OFC_.pkl'
-            Model_data_load()
-            Model_data_Visualization()
+            # 컬럼 리스트 = 데이터 프레임에서 특정 컬럼만 갖고올 때 사용함
+            column_list = ['IR', 'Population', 'LC_index', 'TC_index', 'SDT_index', 'Crime_Rates']
+            
+            # 사용자에게 예측값 Input 받기
+            # 주소 입력
+            address = st.text_input("주변 인프라를 확인할 기준 도로명 주소를 입력 후 엔터를 누르세요.", key='LightGBM_address')
+            # address = "서울역"
 
-        with tab3 :
-            st.write("타운하우스 가격 예측 시각화")
-            File_name = '/Prophet_model_230916_TWN_.pkl'
-            Model_data_load()
-            Model_data_Visualization()
+            # 날짜 입력
+            input_date = st.date_input("예측하고 싶은 날짜를 선택하세요.", datetime.date(2023, 10, 1), key='LightGBM_date')
+            if input_date:
+                year = input_date.year
+                month = input_date.month
+                # ml_df = Filter_df_by_date(Test_df, column_list, year, month)
+            else:
+                st.write("날짜를 선택하지 않았습니다.")
 
-def RSI(): # 일시 보류
-    with st.expander("Predictions_RSI_Section", expanded=False):
-        
-        # 레이아웃 구성
-        tab1, tab2, tab3 = st.tabs(["Apart Plot", "Officetel Plot", "Townhouse Plot"])
+            # 임의 값 입력
+            # step : 기본값 float 소수점 두자리, 1 = int
+            Building_Age_option = st.number_input("건물 연식을 입력하세요", key='LightGBM_Building_Age', step=1)
+            JS_Price_option = st.number_input("계약하시는 물건의 전세 가격을 입력하세요. (단위 : 만원)", key='LightGBM_JS_Price', step=1)
+            JS_BA_option = st.number_input("임대 면적을 입력하세요. (단위 : 제곱미터)", key='LightGBM_JS_BA', step=1)
+            Sell_Price_option = st.number_input("평균적인 매매 가격을 입력하세요. (단위 : 만원)", key='LightGBM_Sell_Price', step=1)
 
-        with tab1 :
-            st.write("아파트 가격 예측 시각화")
-            File_name = '/Prophet_model_230916_APT_.pkl'
-            Model_data_load()
+            
 
-        with tab2 :
-            st.write("오피스텔 가격 예측 시각화")
-            File_name = '/Prophet_model_230916_OFC_.pkl'
-            Model_data_load()
+            if (address != "") :
+                # Google Geocoding API 키, 분당 사용량 제한 : 100회, 일일 사용량 제한 : 1000회, 도로명 주소로 검색해야할듯.. 지번주소랑 위도 경도값 차이남
+                api_key = "AIzaSyCrhAVjetsFGeMQExKGnfFhOdUyb9LQQSs"
 
+                # API 호출
+                url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={api_key}&language=ko"
+                response = requests.get(url)
 
-        with tab3 :
-            st.write("타운하우스 가격 예측 시각화")
-            File_name = '/Prophet_model_230916_TWN_.pkl'
-            Model_data_load()
+                # 응답 처리
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get("results"):
+                        location = data["results"][0]["geometry"]["location"]
+                        lat, lng = location["lat"], location["lng"]
+                        # print(f"주소: {address}")
+                        # print(f"위도: {lat}")
+                        # print(f"경도: {lng}")
+
+                        full_address = data["results"][0].get("formatted_address", "주소를 찾을 수 없습니다.")
+                        # print(f"주소: {full_address}")
+                        
+                        # 받아온 주소 값에서 "구" 텍스트를 찾아 OO구 값 받아오기
+                        match = re.search(r"(\w+구)", full_address)
+
+                        if match:
+
+                            Found_Name = match.group()
+                        
+                        else:
+                            print("일치하는 자치구 이름을 찾을 수 없습니다.")
+
+                    # 검색한 주소와 가장 가까운 주변 지하철 인프라와의 최단거리
+                    SD_to_Subway = calculate_shortest_distance(Subway_df, lat, lng)
+                    SD_to_University = calculate_shortest_distance(University_df, lat, lng)
+                    SD_to_School = calculate_shortest_distance(School_df, lat, lng)
+                    
+                    # 데이터 포인트 생성
+                    data_point = {
+                        'Building_Age': Building_Age_option,
+                        'JS_BA': JS_BA_option,
+                        'Sell_Price': Sell_Price_option,
+                        'Year': year,
+                        'Month': month,
+                        # ↓ ↓ ↓ 임의 지정값 ↓ ↓ ↓ #
+                        'IR': 3.5,
+                        'Population': 4000000,
+                        'LC_index': 100,
+                        'TC_index': 100,
+                        'SDT_index': 100,
+                        'Crime_Rates': 1400,
+                        # ↑ ↑ ↑ 임의 지정값 ↑ ↑ ↑ #
+                        '위도': lat,
+                        '경도': lng,
+                        'Region_강남구': 1 if Found_Name == '강남구' else 0,
+                        'Region_강동구': 1 if Found_Name == '강동구' else 0,
+                        'Region_강북구': 1 if Found_Name == '강북구' else 0,
+                        'Region_강서구': 1 if Found_Name == '강서구' else 0,
+                        'Region_관악구': 1 if Found_Name == '관악구' else 0,
+                        'Region_광진구': 1 if Found_Name == '광진구' else 0,
+                        'Region_구로구': 1 if Found_Name == '구로구' else 0,
+                        'Region_금천구': 1 if Found_Name == '금천구' else 0,
+                        'Region_노원구': 1 if Found_Name == '노원구' else 0,
+                        'Region_도봉구': 1 if Found_Name == '도봉구' else 0,
+                        'Region_동대문구': 1 if Found_Name == '동대문구' else 0,
+                        'Region_동작구': 1 if Found_Name == '동작구' else 0,
+                        'Region_마포구': 1 if Found_Name == '마포구' else 0,
+                        'Region_서대문구': 1 if Found_Name == '서대문구' else 0,
+                        'Region_서초구': 1 if Found_Name == '서초구' else 0,
+                        'Region_성동구': 1 if Found_Name == '성동구' else 0,
+                        'Region_성북구': 1 if Found_Name == '성북구' else 0,
+                        'Region_송파구': 1 if Found_Name == '송파구' else 0,
+                        'Region_양천구': 1 if Found_Name == '양천구' else 0,
+                        'Region_영등포구': 1 if Found_Name == '영등포구' else 0,
+                        'Region_용산구': 1 if Found_Name == '용산구' else 0,
+                        'Region_은평구': 1 if Found_Name == '은평구' else 0,
+                        'Region_종로구': 1 if Found_Name == '종로구' else 0,
+                        'Region_중구': 1 if Found_Name == '중구' else 0,
+                        'Region_중랑구': 1 if Found_Name == '중랑구' else 0,
+                        'Shortest_Distance_to_Subway': SD_to_Subway,
+                        'Shortest_Distance_to_University': SD_to_University,
+                        'Shortest_Distance_to_School': SD_to_School
+                    }
+
+                    # st.write(data_point) 딕셔너리 형태 및 값 파악하는 코드
+
+            with col2 :
+                if (address != ""):
+                    # 사용자 입력값 리스트 생성
+                    user_input_values = [Building_Age_option, JS_Price_option, JS_BA_option, Sell_Price_option]
+
+                    # 딕셔너리 값들이 전부 None 이 아닐 경우와 입력값이 0이 아닐 경우 조건 통과
+                    if all(value is not None for value in data_point.values()) and \
+                           all(value != 0 for value in user_input_values):
+
+                        # LightGBM 모델 로드
+                        model = joblib.load('./models/Test.pkl')
+
+                        # 데이터 포인트를 LightGBM 모델에 입력하여 예측값 얻기
+                        data_array = np.array(list(data_point.values()))
+
+                        # 2D 배열로 변환 >>> data_array = [[5, 2, 200000, 2023, ... , 500, 1000, 800]]
+                        data_array = data_array.reshape(1, -1)  
+
+                        # 변환된 배열, 데이터 포인트로 예측값 불러오기
+                        predicted_value = np.round(model.predict(data_array), 2)
+
+                        # 예측 결과 출력
+                        st.write(f'<h4>예측 결과 값 : {predicted_value} 만원</h4>', unsafe_allow_html=True)
+
+                        # Folium 지도 생성
+                        m = folium.Map(location=[lat, lng], zoom_start=16)  # 해당 주소의 위도, 경도 값을 기준으로 지도 생성
+                        m.add_child(folium.LatLngPopup())  # 마커 클릭 시 위도와 경도 표시
+                        map = st_folium(m, height=440, width=850)
+
+                    else:
+                        st.write('<h5>값을 전부 입력 안하셨으므로 예측이 불가합니다.</h5>', unsafe_allow_html=True)
+                else:
+                    st.write('<h5>주소를 입력하지 않으셨습니다. 도로명 주소를 입력해주세요.</h5>', unsafe_allow_html=True)
