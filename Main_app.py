@@ -16,7 +16,7 @@ from streamlit_lottie import st_lottie
 
 # 다른 어플에서 함수 호출하기
 # 어플만 호출해도 함수는 사용 가능하다 하지만 유지보수 및 모든 함수 및 객체를 갖고오면 네임스페이스가 혼란스러워질 수 있다함(in Chat GPT)
-from EDA_appp import EDA_app_Layout
+from EDA_app import EDA_app_Layout
 from Home_app import Home_app_Layout
 from Test_ml_app import run_ml_app
 from Test_ml_app import run_VP_app
