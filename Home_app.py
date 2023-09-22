@@ -15,7 +15,6 @@ import json
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
 
-
 # --------------- 전역 변수 설정 --------------- #
 
 infra_df = pd.read_csv('./data/Infra.csv')
