@@ -113,7 +113,7 @@ def main():
         run_VP_app()
 
     elif choice == "임시메뉴" :
-        st.subheader("테스트 중")
+        st.write("<h4>Light GBM 알고리즘을 활용한 전세가격 예측모델</h4>", unsafe_allow_html=True)
         layout_ml_LightGBM_app()
 
     elif choice == "🥇 서비스 제공자" :
