@@ -10,23 +10,14 @@ st.set_page_config(
     layout="wide"
     )
 
-import numpy as np
-import pandas as pd
-import pandas_ta as ta
-import matplotlib as mpl
 import matplotlib.pyplot as plt
-import seaborn as sns
 import requests
-import utility
 from streamlit_lottie import st_lottie
-import lightgbm as lgb
 
 # 다른 어플에서 함수 호출하기
 # 어플만 호출해도 함수는 사용 가능하다 하지만 유지보수 및 모든 함수 및 객체를 갖고오면 네임스페이스가 혼란스러워질 수 있다함(in Chat GPT)
-from EDA_app import run_eda_app
-from EDA_app import run_eda_app2
-from Home_app import Create_Map
-from Home_app import Regional_Infrastructure
+from EDA_app import EDA_app_Layout
+from Home_app import Home_app_Layout
 from Test_ml_app import run_ml_app
 from Test_ml_app import run_VP_app
 from ML_app import layout_ml_LightGBM_app
@@ -74,7 +65,14 @@ def set_custom_font():
 # 한글 폰트 설정 함수 호출
 set_custom_font()
 
-# 함수
+# 로티 불러오는 함수
+def load_lottieurl(url) -> dict:
+    r = requests.get(url)
+    if r.status_code != 200:
+        return st.sidebar.error("Lottie 파일을 가져오는 데 문제가 발생했습니다.")
+    return r.json()
+
+# 함수 파트
 def main():
     st.markdown("# 3Team Project : 부동산 전세가격 예측 및 전세가율 분석")
 
@@ -84,7 +82,7 @@ def main():
     with st.sidebar:
         # Sidebar animation
         lottie_url = "https://assets-v2.lottiefiles.com/a/f02fd2fc-1178-11ee-b799-df4a4787e702/cyDf6xxWfS.json"
-        lottie_json = utility.load_lottieurl(lottie_url)
+        lottie_json = load_lottieurl(lottie_url)
         st_lottie(lottie_json, speed=0.1, height=200, key="initial", quality="low")
         st.markdown(
             "<h2 style='text-align: center; color: Black;'>Team Name : 건물주 </h2>",
@@ -94,12 +92,10 @@ def main():
         choice = st.sidebar.selectbox("Menu", menu)
 
     if choice == ("🏛️ 홈페이지"):
-        Create_Map()
-        Regional_Infrastructure()
-        run_eda_app2()
+        Home_app_Layout()
             
     elif choice == "📊 데이터 분석" :
-        run_eda_app()
+        EDA_app_Layout()
 
     elif choice == "⚙️ 전세가격 예측" :
         st.subheader("머신 러닝 페이지")
@@ -116,6 +112,6 @@ def main():
     else :
         pass
 
-# 메인
+# 메인 파트
 if __name__ == "__main__" :
     main()
