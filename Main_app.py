@@ -16,10 +16,9 @@ from streamlit_lottie import st_lottie
 
 # 다른 어플에서 함수 호출하기
 # 어플만 호출해도 함수는 사용 가능하다 하지만 유지보수 및 모든 함수 및 객체를 갖고오면 네임스페이스가 혼란스러워질 수 있다함(in Chat GPT)
-from EDA_app import EDA_app_Layout
 from Home_app import Home_app_Layout
 from Prophet_ML_app import Prophet_ML_app_Layout
-from LightGBM_ML_app import Test_Layout
+from LightGBM_ML_app import ML_LightGBM_app_Layout
 
 # folium 관련 경고 무시
 import warnings
@@ -74,7 +73,7 @@ def load_lottieurl(url) -> dict:
 # 함수 파트
 def main():
     st.markdown("# 부동산 전세가격 예측 및 전세가율 분석")
-
+    st.markdown("### 적정 전세가율을 활용한 전세사기 예방 웹사이트")
     # 구분선 추가
     st.markdown('---')
 
@@ -87,22 +86,19 @@ def main():
             "<h2 style='text-align: center; color: Black;'>Team Name : 건물주 </h2>",
             unsafe_allow_html=True,
         )
-        menu = ["🏛️ 홈페이지", "📊 데이터 분석", "⚙️ 전세가격 예측", "💡 전세 안전도 예측", "🥇 서비스 제공자"]
+        menu = ["🏛️ 홈페이지", "⚙️ 전세가격 예측", "💡 전세 안전성 예측", "🥇 서비스 제공자"]
         choice = st.sidebar.selectbox("Menu", menu)
 
     if choice == ("🏛️ 홈페이지"):
         Home_app_Layout()
-            
-    elif choice == "📊 데이터 분석" :
-        EDA_app_Layout()
 
     elif choice == "⚙️ 전세가격 예측" :
-        st.subheader("머신 러닝 페이지")
+        st.write("<h4>Prophet 알고리즘을 활용한 전세가격 예측모델</h4>", unsafe_allow_html=True)
         Prophet_ML_app_Layout()
 
-    elif choice == "💡 전세 안전도 예측" :
+    elif choice == "💡 전세 안전성 예측" :
         st.write("<h4>Light GBM 알고리즘을 활용한 전세계약 안전성 평가모델</h4>", unsafe_allow_html=True)
-        Test_Layout()
+        ML_LightGBM_app_Layout()
 
     elif choice == "🥇 서비스 제공자" :
         st.image("./image/Service_Provider_1.png")

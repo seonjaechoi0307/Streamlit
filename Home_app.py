@@ -173,7 +173,7 @@ def Create_folium_map_base(df, condition):
         sub_lat, sub_lng = row['latitude'], row['longitude']
 
         # 아이콘 색상 설정
-        icon_color = 'grey'
+        icon_color = 'blue'
         radius = 200
 
         # 마커 생성 및 추가
