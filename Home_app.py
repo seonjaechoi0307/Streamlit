@@ -409,7 +409,7 @@ def Home_app_Layout():
 
     with st.expander("경기변동 동향탐색 구역", expanded=True):
 
-        tab1, tab2, tab3, tab4, tab5 = st.tabs(["경제성장률 및 금리 변동추이", "경기종합지수 변동추이", "범죄율 변동추이", "연령별 인구수 변동추이", "재개발 횟수 변동추이"])
+        tab1, tab2, tab3, tab4 = st.tabs(["경제성장률 및 금리 변동추이", "경기종합지수 변동추이", "범죄율 변동추이", "연령별 인구수 변동추이"])
 
         with tab1:
             # 경제성장률 및 금리
@@ -431,7 +431,8 @@ def Home_app_Layout():
             df = pd.read_csv('./data/서울_연령별_인구수_전처리.csv')
             make_chart_PBA(df)
 
-        with tab5:
-            # 재개발
-            df = pd.read_csv('./data/서울주택재개발_전처리완료.csv')
-            make_chart_HR(df)
+        # 삭제하기로
+        # with tab5:
+        #     # 재개발
+        #     df = pd.read_csv('./data/서울주택재개발_전처리완료.csv')
+        #     make_chart_HR(df)

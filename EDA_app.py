@@ -15,20 +15,20 @@ import numpy as np
 def plot_line_chart(x, y):
     f, ax = plt.subplots(figsize=(8, 6))
     ax.plot(x, y, marker='o', linestyle='-')
-    ax.set_xlabel('X axis')
-    ax.set_ylabel('Y axis')
-    ax.set_title('line Plot')
-    plt.xticks(rotation=90)  # x 축 라벨을 45도 회전하여 보기 편하게 설정
+    ax.set_xlabel('X 축')
+    ax.set_ylabel('Y 축')
+    ax.set_title('선 그래프')
+    plt.xticks(rotation=90)  # x 축 라벨을 90도 회전하여 보기 편하게 설정
     plt.tight_layout()
     st.pyplot(f)
 
 def plot_bar_chart(x, y):
     f, ax = plt.subplots(figsize=(8, 6))
     ax.bar(x, y)
-    ax.set_xlabel('X axis')
-    ax.set_ylabel('Y axis')
-    ax.set_title('bar Plot')
-    plt.xticks(rotation=90)  # x 축 라벨을 45도 회전하여 보기 편하게 설정
+    ax.set_xlabel('X 축')
+    ax.set_ylabel('Y 축')
+    ax.set_title('막대 그래프')
+    plt.xticks(rotation=90)  # x 축 라벨을 90도 회전하여 보기 편하게 설정
     plt.tight_layout()
     st.pyplot(f)
 
@@ -36,10 +36,10 @@ def plot_bar_chart(x, y):
 def plot_scatter_chart(x, y):
     f, ax = plt.subplots(figsize=(8, 6))
     ax.scatter(x, y)
-    ax.set_xlabel('X axis')
-    ax.set_ylabel('Y axis')
-    ax.set_title('Scatter Plot')
-    plt.xticks(rotation=90)  # x 축 라벨을 45도 회전하여 보기 편하게 설정
+    ax.set_xlabel('X 축')
+    ax.set_ylabel('Y 축')
+    ax.set_title('산점도 그래프')
+    plt.xticks(rotation=90)  # x 축 라벨을 90도 회전하여 보기 편하게 설정
     plt.tight_layout()
     st.pyplot(f)
 
@@ -47,10 +47,10 @@ def plot_scatter_chart(x, y):
 def plot_box_chart(x, y):
     f, ax = plt.subplots(figsize=(8, 6))
     sns.boxplot(x=x, y=y, ax=ax)
-    ax.set_xlabel('X axis')
-    ax.set_ylabel('Y axis')
-    ax.set_title('Box Plot')
-    plt.xticks(rotation=90)  # x 축 라벨을 45도 회전하여 보기 편하게 설정
+    ax.set_xlabel('X 축')
+    ax.set_ylabel('Y 축')
+    ax.set_title('박스 그래프')
+    plt.xticks(rotation=90)  # x 축 라벨을 90도 회전하여 보기 편하게 설정
     plt.tight_layout()
     st.pyplot(f)
 
@@ -71,7 +71,7 @@ def plot_heatmap_chart(data, target_column):
                      annot_kws={'size': 10}, yticklabels=cols.values,
                      xticklabels=cols.values)
     
-    ax.set_title('Correlation Heatmap plot')
+    ax.set_title('상관관계 히트맵 그래프')
     
     plt.tight_layout()
     st.pyplot(f)
