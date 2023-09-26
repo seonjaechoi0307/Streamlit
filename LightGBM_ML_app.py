@@ -14,6 +14,7 @@ from math import radians, sin, cos, sqrt, atan2
 import datetime
 import lightgbm as lgb
 import joblib
+import xgboost as xgb
 
 # -------------------- 전역변수 세팅파트 -------------------- #
 
@@ -383,7 +384,7 @@ def ML_LightGBM_app_Layout():
                     if (address != ""):
                         
                         # 불러올 모델 파일 이름 지정
-                        File_Name = '230924_Officetel_LightGBM_model.pkl'
+                        File_Name = '230926_Officetel_xgb_model.pkl'
 
                         # 딕셔너리값 기준으로 결과 나타내기
                         calculate_dict_result(data_point, File_Name, JS_Price_option)
