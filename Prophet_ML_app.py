@@ -205,7 +205,7 @@ def Prophet_ML_app_Layout():
         st.markdown('---')
 
         # 레이아웃 구성
-        tab1, tab2, tab3 = st.tabs(["ML to Apart", "ML to Officetel", "ML to Townhouse"])
+        tab1, tab2, tab3 = st.tabs(["아파트", "오피스텔", "연립다세대"])
 
         with tab1 :
             col1, col2 = st.columns(2)
@@ -256,7 +256,7 @@ def Prophet_ML_app_Layout():
     with st.expander("Model_DataFrame_Section", expanded=False):
 
         # 레이아웃 구성
-        tab1, tab2, tab3 = st.tabs(["ML to Apart_DF", "ML to Officetel_DF", "ML to Townhouse_DF"])
+        tab1, tab2, tab3 = st.tabs(["아파트 데이터 프레임", "오피스텔 데이터 프레임", "연립다세대 데이터 프레임"])
 
         with tab1 :
             File_name = '/230924_Prophet_APT_Model.pkl'
@@ -273,7 +273,7 @@ def Prophet_ML_app_Layout():
     with st.expander("Visualize_Predictions_Section", expanded=True):
         
         # 레이아웃 구성
-        tab1, tab2, tab3 = st.tabs(["Apart Plot", "Officetel Plot", "Townhouse Plot"])
+        tab1, tab2, tab3 = st.tabs(["아파트 그래프", "오피스텔 그래프", "연립다세대 그래프"])
 
         with tab1 :
             st.write("아파트 전세 가격 예측 시각화")

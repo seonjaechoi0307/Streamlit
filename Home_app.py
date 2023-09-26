@@ -312,7 +312,7 @@ def make_chart_PBA(df):
     plt.plot(x, y9, label='2022')
 
     plt.title("서울시 인구수")
-    plt.xticks(rotation=80, ha='right')
+    plt.xticks(rotation=45, ha='right')
     plt.xlim(['종로구', '강동구'])
     plt.legend()
     plt.grid()

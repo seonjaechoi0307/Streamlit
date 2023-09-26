@@ -164,12 +164,12 @@ def generate_prediction_dict(address, year, month, Building_Age_option, JS_Price
             'Month': month,
             # ↓ ↓ ↓ 임의 지정값 ↓ ↓ ↓ #
             # 따로 불러오는 걸로 변경함
-            # 'IR': 3.5,
-            # 'Population': 4000000,
-            # 'LC_index': 100,
-            # 'TC_index': 100,
-            # 'SDT_index': 100,
-            # 'Crime_Rates': 1400,
+            # 'IR': 3.5, # 3.5 고정
+            # 'Population': 4000000, # 천천히 감소, 평균 값
+            # 'LC_index': 100, # 등차수열 천천히 증가?
+            # 'TC_index': 100, # 등차수열 천천히 증가?
+            # 'SDT_index': 100, # 등차수열 천천히 증가?
+            # 'Crime_Rates': 1400, # ↑↑↑ 평균 
             # ↑ ↑ ↑ 임의 지정값 ↑ ↑ ↑ #
             '위도': lat,
             '경도': lng,
@@ -258,7 +258,7 @@ def ML_LightGBM_app_Layout():
     # 컬럼 리스트 = 데이터 프레임에서 특정 컬럼만 갖고올 때 사용함
     Cal_column_list = ['IR', 'Population', 'LC_index', 'TC_index', 'SDT_index', 'Crime_Rates']
 
-    tab1, tab2, tab3 = st.tabs(["아파트 전세 안전도 예측", "오피스텔 전세 안전도 예측", "타운하우스 전세 안전도 예측"])
+    tab1, tab2, tab3 = st.tabs(["아파트 전세 안전성 예측", "오피스텔 전세 안전성 예측", "연립다세대 전세 안전성 예측"])
 
     with tab1 :
     
@@ -297,11 +297,11 @@ def ML_LightGBM_app_Layout():
                 Floor_option = st.number_input("임대 건물의 층수를 입력하세요.", key='LightGBM_Floor_APT', step=1)
 
                 add_dict = {
-                    'Population': 4000000,
+                    'Population': 376000,
                     'IR': 3.5,
-                    'LC_index': 100,
-                    'SDT_index': 100,
-                    'Crime_Rates': 1400
+                    'LC_index': 105,
+                    'SDT_index': 85,
+                    'Crime_Rates': 1
                 }
 
                 if (address != "") :
@@ -362,12 +362,12 @@ def ML_LightGBM_app_Layout():
                 Floor_option = st.number_input("임대 건물의 층수를 입력하세요.", key='LightGBM_Floor_OFC', step=1)
 
                 add_dict = {
-                    'Population': 4000000,
+                    'Population': 376000,
                     'UR': 3.5,
-                    'LC_index': 100,
-                    'SDT_index': 100,
-                    'HSP_index': 100,
-                    'Crime_Rates': 1400
+                    'LC_index': 105,
+                    'SDT_index': 85,
+                    'HSP_index': 150,
+                    'Crime_Rates': 1
                 }
 
                 if (address != "") :
@@ -428,13 +428,13 @@ def ML_LightGBM_app_Layout():
                 Floor_option = st.number_input("임대 건물의 층수를 입력하세요.", key='LightGBM_Floor_TWN', step=1)
 
                 add_dict = {
-                    'Population': 4000000,
+                    'Population': 376000,
                     'IR': 3.5,
-                    'UR': 3.5,
-                    'LC_index': 100,
-                    'SDT_index': 100,
-                    'HSP_index': 100,
-                    'Crime_Rates': 1400
+                    'UR': 2.4,
+                    'LC_index': 105,
+                    'SDT_index': 85,
+                    'HSP_index': 150,
+                    'Crime_Rates': 1
                 }
 
                 if (address != "") :
